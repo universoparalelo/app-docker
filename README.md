@@ -1,5 +1,7 @@
 [![Say hello](https://github.com/universoparalelo/app-docker/actions/workflows/main.yml/badge.svg)](https://github.com/universoparalelo/app-docker/actions/workflows/main.yml)
 
+[![Deployment Pipeline](https://github.com/universoparalelo/app-docker/actions/workflows/pipeline.yml/badge.svg)](https://github.com/universoparalelo/app-docker/actions/workflows/pipeline.yml)
+
 # App NodeJS MongoDB Docker
 
 ## Requisitos 
