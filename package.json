@@ -10,6 +10,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "start": "node src/main.js",
     "test": "vitest",
     "test:watch": "vitest watch",
     "test:coverage": "vitest run --coverage",

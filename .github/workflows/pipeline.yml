@@ -24,8 +24,13 @@ jobs:
         run: npm run build
       - name: Test  
         run: npm test
-      - name: Deploy to production  
-        run: npm run deploy
+
+      - name: Deploy to Vercel
+        uses: withvercel/action@v1
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}  # Necesitas configurar este secret
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }} 
+
       - name: Notify deployment success
         run: echo "Deployment to production successful!"
       - name: Notify deployment failure 
