@@ -9,16 +9,23 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  deploy:
+  avoidant_redundancy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Cancel previous redundant jobs
         uses: styfle/cancel-workflow-action@0.9.1
         with:
           access_token: ${{ secrets.GH_TOKEN }}
+
+  object_github:
+    runs-on: ubuntu-latest
+    steps:
       - name: See object github
         run: echo "${{ toJson(github) }}"
+  
+  lint:
+    runs-on: ubuntu-latest
+    steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
@@ -29,14 +36,53 @@ jobs:
         run: npm install
       - name: Lint
         run: npm run lint
+  
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        run: npm install
       - name: Build
         run: npm run build
+      - uses: actions/upload-artifact@v2
+        with: 
+          name: dist
+          path: dist
+  
+  test:
+    needs: [lint, build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        run: npm install
+      - uses: actions/download-artifact@v2
+        with: 
+          name: dist
+          path: dist
       - name: Test  
         run: npm test
 
+  deploy:
+    needs: [test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Install Vercel CLI
         run: npm install -g vercel
-
       - name: Deploy to Vercel
         # solo despliega si es un push a main
         if: ${{ github.event_name == 'push' }}
@@ -46,9 +92,3 @@ jobs:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}  # Necesitas configurar este secret
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}  # Necesitas configurar este secret
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }} 
-
-      - name: Notify deployment success
-        run: echo "Deployment to production successful!"
-      - name: Notify deployment failure 
-        if: failure()
-        run: echo "Deployment to production failed!"
