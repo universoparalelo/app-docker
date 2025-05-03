@@ -29,8 +29,9 @@ jobs:
         uses: BetaHuhn/deploy-to-vercel-action@v1
         with:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}  # Necesitas configurar este secret
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}  # Necesitas configurar este secret
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }} 
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}  # Necesitas configurar este secret
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }} 
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}  # Necesitas configurar este secret
 
       - name: Notify deployment success
         run: echo "Deployment to production successful!"
