@@ -4,12 +4,21 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Cancel previous redundant jobs
+        uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          access_token: ${{ secrets.GH_TOKEN }}
+      - name: See object github
+        run: echo "${{ toJson(github) }}"
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
@@ -24,11 +33,13 @@ jobs:
         run: npm run build
       - name: Test  
         run: npm test
-        
+
       - name: Install Vercel CLI
         run: npm install -g vercel
 
       - name: Deploy to Vercel
+        # solo despliega si es un push a main
+        if: ${{ github.event_name == 'push' }}
         uses: BetaHuhn/deploy-to-vercel-action@v1
         with:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}  # Necesitas configurar este secret
