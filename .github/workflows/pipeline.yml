@@ -17,11 +17,11 @@ jobs:
         with:
           access_token: ${{ secrets.GH_TOKEN }}
 
-  object_github:
-    runs-on: ubuntu-latest
-    steps:
-      - name: See object github
-        run: echo "${{ toJson(github) }}"
+  # object_github:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: See object github
+  #       run: echo "${{ toJson(github) }}"
   
   lint:
     runs-on: ubuntu-latest
